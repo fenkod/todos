@@ -1,7 +1,11 @@
 require 'spec_helper'
 
+class LoginPage < SitePrism::Page
+	set_url "http://localhost:9292"
+end
+
 describe "Sanity" do
 	it "is sane" do
-		expect(1 + 1).to eql(2)
+		LoginPage.new.load
 	end
 end
