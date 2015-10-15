@@ -80,10 +80,10 @@ describe "adding todos" do
 	}
 
 	it "adds a todo to the list" do
-		app.todo.form.add_todo("asdf")
+		app.todo.form.add_todo("Wake Up")
 
 		expect(app.todo).to have_list
-		expect(app.todo.list.items.first).to have_content "asdf"
+		expect(app.todo.list.items.first).to have_content "Wake Up"
 	end
 
 	it "adds multiple todos to the list" do
@@ -94,10 +94,10 @@ describe "adding todos" do
 		end
 
 		items.each_with_index do |item, index|
-			expect(app.todo.list.items[index]).to have_content item
+			expect(app.todo.list.items[index].text).to eql item
 		end
 
-		expect(app.todo.list.items.first).to have_content items[0]
-		expect(app.todo.list.items.last).to have_content items[-1]
+		expect(app.todo.list.items.first.text).to eql items[0]
+		expect(app.todo.list.items.last.text).to eql items[-1]
 	end
 end
