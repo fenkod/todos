@@ -97,7 +97,7 @@ describe "adding todos" do
 			expect(app.todo.list.items[index]).to have_content item
 		end
 
-		expect(app.todo.list.items.first).to have_content "Wake Up"
-		expect(app.todo.list.items.last).to have_content "Drag a Comb Across My Head"
+		expect(app.todo.list.items.first).to have_content items[0]
+		expect(app.todo.list.items.last).to have_content items[-1]
 	end
 end
