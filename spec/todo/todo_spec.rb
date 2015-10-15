@@ -87,10 +87,17 @@ describe "adding todos" do
 	end
 
 	it "adds multiple todos to the list" do
-		app.todo.form.add_todo("first")
-		app.todo.form.add_todo("second")
+		items = ["Wake Up", "Get out of Bed", "Drag a Comb Across My Head"]
 
-		expect(app.todo.list.items.first).to have_content "first"
-		expect(app.todo.list.items.last).to have_content "second"
+		items.each do |item|
+			app.todo.form.add_todo(item)
+		end
+
+		items.each_with_index do |item, index|
+			expect(app.todo.list.items[index]).to have_content item
+		end
+
+		expect(app.todo.list.items.first).to have_content "Wake Up"
+		expect(app.todo.list.items.last).to have_content "Drag a Comb Across My Head"
 	end
 end
