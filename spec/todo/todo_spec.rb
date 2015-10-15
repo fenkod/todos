@@ -4,20 +4,32 @@ class Login < SitePrism::Section
 	element :username_input, "input#username"
 	element :password_input, "input#password"
 	element :submit_button,  "input[value='Login']"
+
+	def login_with(username, password)
+		username_input.set(username)
+		password_input.set(password)
+
+		submit_button.click
+	end
 end
 
 class TodoForm < SitePrism::Section
 	element :todo_input, "input[name='text']"
 	element :todo_submit, "input[type='submit']"
+
+	def add_todo(text)
+		todo_input.set(text)
+		todo_submit.click
+	end
 end
 
 class TodoList < SitePrism::Section
-	elements :todo_items, "li"
+	elements :items, "li"
 end
 
 class ToDo < SitePrism::Section
-	section :todo_form, TodoForm, "form"
-	section :todo_list, TodoList, "ul"
+	section :form, TodoForm, "form"
+	section :list, TodoList, "ul"
 end
 
 class CoolStuffApp < SitePrism::Page
@@ -44,23 +56,41 @@ describe "login page" do
 		expect(login).to have_submit_button
 	end
 
-	it "displays a validation error" do
-		login.username_input.set("a-username")
-		login.password_input.set("a-password")
-
-		login.submit_button.click
+	it "displays a validation error with invalid credentials" do
+		login.login_with("bad@example.com", "bad-password")
 
 		expect(app).to have_login
 		expect(login).to have_content "Invalid"
 	end
 
 	it "displays the todo section when logged in with valid credentials" do
-		login.username_input.set("test@example.com")
-		login.password_input.set("password")
-
-		login.submit_button.click
+		login.login_with("test@example.com", "password")
 
 		expect(app).not_to have_login
 		expect(app).to have_todo
+	end
+end
+
+describe "adding todos" do
+	let(:app) { CoolStuffApp.new }
+
+	before {
+		app.load
+		app.login.login_with("test@example.com", "password")
+	}
+
+	it "adds a todo to the list" do
+		app.todo.form.add_todo("asdf")
+
+		expect(app.todo).to have_list
+		expect(app.todo.list.items.first).to have_content "asdf"
+	end
+
+	it "adds multiple todos to the list" do
+		app.todo.form.add_todo("first")
+		app.todo.form.add_todo("second")
+
+		expect(app.todo.list.items.first).to have_content "first"
+		expect(app.todo.list.items.last).to have_content "second"
 	end
 end
